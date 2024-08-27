@@ -1,0 +1,30 @@
+# Read the CSV file into a frame
+energy_generation_solar = read("/Users/niklas/Documents/GitHub/Uni/10_Masterarbeit/data_files/prepocessed_datafiles/energy_generation_solar.csv", format="csv", header=TRUE, sep=",")
+
+# Print the size of the data
+print("Dataframe energy_generation_solar has " + toString(nrow(energy_generation_solar)) + " rows.")
+
+# Parameters
+alpha = 0.7
+
+# Initialize smoothed_value
+smoothed_value = energy_generation_solar[1]
+
+# Start timing
+start_time = time()
+
+# Vectorized exponential smoothing
+n = nrow(energy_generation_solar)
+weights = rev(alpha * (1 - alpha) ^ seq(0, n-1, 1))
+smoothed = rev(cumsum(weights * energy_generation_solar))
+smoothed_value = smoothed[1] / sum(weights)
+
+# End timing and calculate execution time
+end_time = time()
+function_time = (end_time - start_time) / 1000000000 # Convert nanoseconds to seconds
+
+# Print the results
+print('### Dataset energy_generation_solar')
+print('### #2 Vectorized \n')
+print('The last smoothed value for energy_generation_solar is: ' + toString(smoothed_value))
+print('The function was executed in ' + toString(function_time) + ' seconds')

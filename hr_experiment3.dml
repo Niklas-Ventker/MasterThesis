@@ -1,0 +1,40 @@
+# Read the CSV file into a frame
+heart_rate = read("/Users/niklas/Documents/GitHub/Uni/10_Masterarbeit/data_files/prepocessed_datafiles/heart_rate.csv", format="csv", header=TRUE, sep=",", rows=103921290, cols=1)
+
+# Print the size of the data
+print("Dataframe heart_rate has " + toString(nrow(heart_rate)) + " rows.")
+
+# Parameters
+alpha = 0.7
+
+# Initialize smoothed_value
+smoothed_value = heart_rate[1]
+
+# Vector to store execution times
+number_of_executions = 2
+execution_times = matrix(0, number_of_executions, 1)
+
+# Perform exponential smoothing on the data
+for (i in 1:number_of_executions) {
+    start_time = time()
+
+    # Perform exponential smoothing on the data
+    for (j in 2:nrow(heart_rate)) {
+        smoothed_value = alpha * heart_rate[j] + (1 - alpha) * smoothed_value
+    }
+
+    # End timing and calculate execution time
+    end_time = time()
+    function_time = (end_time - start_time) / 1000000000 # Convert nanoseconds to seconds
+    print(function_time)
+    execution_times[i, 1] = function_time
+}
+
+# Calculate the function time
+function_time = avg(execution_times)
+
+# Print the results
+print('### Dataset heart_rate')
+print('### #1 Basic For Loop \n')
+print('The last smoothed value for wind_speed is: ' + toString(smoothed_value))
+print('The function was executed in ' + toString(function_time) + ' seconds')
