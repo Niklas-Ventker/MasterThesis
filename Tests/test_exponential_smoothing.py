@@ -16,7 +16,7 @@ data_a = np.genfromtxt('/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files
 # Define the parameters for testing
 alpha = 0.7
 number_of_executions = 10
-# For wind_speed_small
+# For wind_speed_small last smoothed value
 expected_output_a = 9.729056156830051
 
 
@@ -34,14 +34,14 @@ def test_exponential_smoothing_vectorized_dataset_A():
     print(f"Function execution time: {function_time} seconds")
     return(function_time)
 
-def test_exponential_smoothing_parallel_dataset_A():
+def test_exponential_smoothing_basic_parallel_dataset_A():
     smoothed_value, function_time = exponential_smoothing_parallel(data_a, alpha, number_of_executions)
     assert np.allclose(smoothed_value, expected_output_a, 0.0000000005), f"Expected {expected_output_a}, but got {smoothed_value}"
     assert function_time > 0
     print(f"Function execution time: {function_time} seconds")
     return(function_time)
 
-def test_exponential_smoothing_parallel_vectorized_dataset_A():
+def test_exponential_smoothing_vectorized_parallel_dataset_A():
     smoothed_value, function_time = exponential_smoothing_parallel_vectorized(data_a, alpha, number_of_executions)
     assert np.allclose(smoothed_value, expected_output_a, 0.0000000005), f"Expected {expected_output_a}, but got {smoothed_value}"
     assert function_time > 0
@@ -57,33 +57,33 @@ data_b = np.genfromtxt('/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files
 alpha = 0.7
 number_of_executions = 10
 # For wind_speed_small
-expected_output_b = 9.729056156830051
+expected_output_b = 33.09027077319566
 
 
 def test_exponential_smoothing_basic_dataset_B():
-    smoothed_value, function_time = exponential_smoothing_basic(data, alpha, number_of_executions)
-    assert np.allclose(smoothed_value, expected_output, 0.0000000005), f"Expected {expected_output}, but got {smoothed_value}"
+    smoothed_value, function_time = exponential_smoothing_basic(data_b, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {smoothed_value}"
     assert function_time > 0
     print(f"Function execution time: {function_time} seconds")
     return(function_time)
 
 def test_exponential_smoothing_vectorized_dataset_B():
-    smoothed_value, function_time = exponential_smoothing_vectorized(data, alpha, number_of_executions)
-    assert np.allclose(smoothed_value, expected_output, 0.0000000005), f"Expected {expected_output}, but got {smoothed_value}"
+    smoothed_value, function_time = exponential_smoothing_vectorized(data_b, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {smoothed_value}"
     assert function_time > 0
     print(f"Function execution time: {function_time} seconds")
     return(function_time)
 
-def test_exponential_smoothing_parallel_dataset_B():
-    smoothed_value, function_time = exponential_smoothing_parallel(data, alpha, number_of_executions)
-    assert np.allclose(smoothed_value, expected_output, 0.0000000005), f"Expected {expected_output}, but got {smoothed_value}"
+def test_exponential_smoothing_basic_parallel_dataset_B():
+    smoothed_value, function_time = exponential_smoothing_parallel(data_b, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {smoothed_value}"
     assert function_time > 0
     print(f"Function execution time: {function_time} seconds")
     return(function_time)
 
-def test_exponential_smoothing_parallel_vectorized_dataset_B():
-    smoothed_value, function_time = exponential_smoothing_parallel_vectorized(data, alpha, number_of_executions)
-    assert np.allclose(smoothed_value, expected_output, 0.0000000005), f"Expected {expected_output}, but got {smoothed_value}"
+def test_exponential_smoothing_vectorized_parallel_dataset_B():
+    smoothed_value, function_time = exponential_smoothing_parallel_vectorized(data_b, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {smoothed_value}"
     assert function_time > 0
     print(f"Function execution time: {function_time} seconds")
     return(function_time)
@@ -93,4 +93,39 @@ def test_exponential_smoothing_parallel_vectorized_dataset_B():
 #################################################
 # Dataset C - Heart rate
 
+# Load the dataset
+data_c = np.genfromtxt('/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/heart_rate_small.csv', delimiter=',', skip_header=1)   
+# Define the parameters for testing
+alpha = 0.7
+number_of_executions = 10
+# For heart_rate_small last smoothed value
+expected_output_c = 98.77752694571055
 
+
+def test_exponential_smoothing_basic_dataset_C():
+    smoothed_value, function_time = exponential_smoothing_basic(data_c, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_c, 0.0000000005), f"Expected {expected_output_c}, but got {smoothed_value}"
+    assert function_time > 0
+    print(f"Function execution time: {function_time} seconds")
+    return(function_time)
+
+def test_exponential_smoothing_vectorized_dataset_C():
+    smoothed_value, function_time = exponential_smoothing_vectorized(data_c, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_c, 0.0000000005), f"Expected {expected_output_c}, but got {smoothed_value}"
+    assert function_time > 0
+    print(f"Function execution time: {function_time} seconds")
+    return(function_time)
+
+def test_exponential_smoothing_basic_parallel_dataset_C():
+    smoothed_value, function_time = exponential_smoothing_parallel(data_c, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_c, 0.0000000005), f"Expected {expected_output_c}, but got {smoothed_value}"
+    assert function_time > 0
+    print(f"Function execution time: {function_time} seconds")
+    return(function_time)
+
+def test_exponential_smoothing_vectorized_parallel_dataset_C():
+    smoothed_value, function_time = exponential_smoothing_parallel_vectorized(data_c, alpha, number_of_executions)
+    assert np.allclose(smoothed_value, expected_output_c, 0.0000000005), f"Expected {expected_output_c}, but got {smoothed_value}"
+    assert function_time > 0
+    print(f"Function execution time: {function_time} seconds")
+    return(function_time)
