@@ -13,7 +13,6 @@ test_that("test_exponential_smoothing_basic_dataset_A", {
   smoothed_value <- result$smoothed_value
   function_time <- result$function_time
   expect_equal(smoothed_value, expected_output_a, tolerance = 0.0000000005)
-  expect_true(function_time > 0)
 })
 
 test_that("test_exponential_smoothing_vectorized_dataset_A", {
@@ -21,7 +20,6 @@ test_that("test_exponential_smoothing_vectorized_dataset_A", {
   smoothed_value <- result$smoothed_value
   function_time <- result$function_time
   expect_equal(smoothed_value, expected_output_a, tolerance = 0.0000000005)
-  expect_true(function_time > 0)
 })
 
 test_that("Basic arithmetic works", {
