@@ -11,7 +11,7 @@ def exponential_smoothing_basic(data, alpha, number_of_executions):
             smoothed_value = alpha * data[j] + (1 - alpha) * smoothed_value
         end_time = time.time()
         execution_times.append(end_time - start_time)
-    function_time = np.median(execution_times)
+    function_time = np.mean(execution_times)
     return smoothed_value, function_time
 
 def exponential_smoothing_vectorized(data, alpha, number_of_executions):
@@ -24,7 +24,7 @@ def exponential_smoothing_vectorized(data, alpha, number_of_executions):
         smoothed_value = smoothed[0] / weights.sum()
         end_time = time.time()
         execution_times.append(end_time - start_time)
-    function_time = np.median(execution_times)
+    function_time = np.mean(execution_times)
     return smoothed_value, function_time
 
 @jit(nopython=True)
@@ -48,7 +48,7 @@ def exponential_smoothing_parallel(data, alpha, number_of_executions):
         execution_times.append(end_time - start_time)
 
     # Calculate the function time
-    function_time = np.median(execution_times)
+    function_time = np.mean(execution_times)
     return last_smoothed_value, function_time
 
 
@@ -74,5 +74,5 @@ def exponential_smoothing_parallel_vectorized(data, alpha, number_of_executions)
         execution_times.append(end_time - start_time)
 
     # Calculate the function time
-    function_time = np.median(execution_times)
+    function_time = np.mean(execution_times)
     return smoothed_value, function_time

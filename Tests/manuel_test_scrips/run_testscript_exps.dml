@@ -1,0 +1,458 @@
+#################################################
+# First define the functions
+
+# Function to perform basic exponential smoothing 
+exponential_smoothing_basic = function(matrix[double] data, double alpha, int number_of_executions) 
+    return (double smoothed_value , double function_time) {
+
+    # Initialize smoothed_value and function_times
+    smoothed_value = data[1, 1]
+    function_times = matrix(0, number_of_executions, 1)
+
+    # Loop over number of executions
+    for (i in 1:number_of_executions) {
+
+        start_time = time()
+
+        # Perform exponential smoothing on the data
+        for (j in 2:nrow(data)) {
+            smoothed_value = alpha * data[j, 1] + (1 - alpha) * smoothed_value
+        }
+
+        end_time = time()
+      function_time = (end_time - start_time) / 1000000000 # Convert nanoseconds to seconds
+      function_times[i, 1] = function_time
+    }
+    # Calculate the function time
+    function_time = avg(function_times)
+    smoothed_value = as.scalar(smoothed_value)
+}
+
+# Function to perform vectorized exponential smoothing
+exponential_smoothing_vectorized = function(matrix[double] data, double alpha, int number_of_executions) return (double smoothed_value) {
+
+    # Initialize smoothed_value
+    smoothed_value = data[1, 1]
+
+    # Loop over number of executions
+    for (i in 1:number_of_executions) {
+
+        start_time = time()
+
+        # Perform vectorized exponential smoothing
+        n = nrow(data)
+        weights = rev(alpha * (1 - alpha) ^ seq(0, n-1, 1))
+        smoothed = rev(cumsum(weights * data[, 1]))
+        smoothed_value = smoothed[1] / sum(weights)
+        end_time = time()
+        function_time = (end_time - start_time) / 1000000000 # Convert nanoseconds to seconds
+        function_times[i, 1] = function_time
+    }
+    # Calculate the function time
+    function_time = avg(function_times)
+}
+
+#################################################
+# Test cases
+
+# Initialize counters
+passed_tests = 0
+failed_tests = 0
+
+# Define the test functions
+
+#################################################
+# Dataset A
+
+test_exponential_smoothing_basic_dataset_a = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_a = 9.729056156830051
+  
+  # Load the datasets
+  data_a = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/wind_speed_small.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  result = exponential_smoothing_basic(data_a, alpha, number_of_executions)
+
+  # Access the returned values
+  smoothed_value = result[1]
+  function_time = result[2]
+
+  if (abs(smoothed_value - expected_output_a) < 0.0000000005) {
+    print("test_exponential_smoothing_basic_dataset_a: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_basic_dataset_a: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+test_exponential_smoothing_vectorized_dataset_a = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_a = 9.729056156830051
+  
+  # Load the datasets
+  data_a = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/wind_speed_small.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  smoothed_value = exponential_smoothing_vectorized(data_a, alpha, number_of_executions)
+ 
+  if (abs(smoothed_value - expected_output_a) < 0.0000000005) {
+    print("test_exponential_smoothing_vectorized_dataset_a: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    #println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_vectorized_dataset_a: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+#################################################
+# Dataset B
+
+test_exponential_smoothing_basic_dataset_b = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_b = 33.09027077319566
+  
+  # Load the datasets
+  data_b = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/energy_generation_solar_small.csv", header=TRUE, sep=",")
+  #data_b = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/energy_generation_solar.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  result = exponential_smoothing_basic(data_b, alpha, number_of_executions)
+
+  # Access the returned values
+  smoothed_value = result[1]
+  function_time = result[2]
+
+  if (abs(smoothed_value - expected_output_b) < 0.0000000005) {
+    print("test_exponential_smoothing_basic_dataset_b: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_basic_dataset_b: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+test_exponential_smoothing_vectorized_dataset_b = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_b = 33.09027077319566
+  
+  # Load the datasets
+  data_b = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/energy_generation_solar_small.csv", header=TRUE, sep=",")
+  #data_b = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/energy_generation_solar.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  smoothed_value = exponential_smoothing_vectorized(data_b, alpha, number_of_executions)
+ 
+  if (abs(smoothed_value - expected_output_a) < 0.0000000005) {
+    print("test_exponential_smoothing_vectorized_dataset_b: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    #println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_vectorized_dataset_b: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+#################################################
+# Dataset C
+
+test_exponential_smoothing_basic_dataset_c = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_c = 98.77752694571055
+  
+  # Load the datasets
+  data_c = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/heart_rate_small.csv", format="csv", header=TRUE, sep=",")
+  #data_c = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/heart_rate.csv", format="csv", header=TRUE, sep=",")
+
+  
+  # Execute the function
+  result = exponential_smoothing_basic(data_c, alpha, number_of_executions)
+
+  # Access the returned values
+  smoothed_value = result[1]
+  function_time = result[2]
+
+  if (abs(smoothed_value - expected_output_c) < 0.0000000005) {
+    print("test_exponential_smoothing_basic_dataset_c: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_basic_dataset_c: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+test_exponential_smoothing_vectorized_dataset_c = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_c = 98.77752694571055
+  
+  # Load the datasets
+  data_c = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/heart_rate_small.csv", format="csv", header=TRUE, sep=",")
+  #data_c = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/heart_rate.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  smoothed_value = exponential_smoothing_vectorized(data_c, alpha, number_of_executions)
+ 
+  if (abs(smoothed_value - expected_output_c) < 0.0000000005) {
+    print("test_exponential_smoothing_vectorized_dataset_c: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    #println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_vectorized_dataset_c: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+#################################################
+# Dataset D
+
+test_exponential_smoothing_basic_dataset_d = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_d = 11.475341948013103
+  
+  # Load the datasets
+  data_d = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/temperature_delhi_small.csv", format="csv", header=TRUE, sep=",")
+  #data_d = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/temperature_delhi.csv", format="csv", header=TRUE, sep=",")
+
+
+  # Execute the function
+  result = exponential_smoothing_basic(data_d, alpha, number_of_executions)
+
+  # Access the returned values
+  smoothed_value = result[1]
+  function_time = result[2]
+
+  if (abs(smoothed_value - expected_output_d) < 0.0000000005) {
+    print("test_exponential_smoothing_basic_dataset_d: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_basic_dataset_d: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+test_exponential_smoothing_vectorized_dataset_d = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_d = 11.475341948013103
+  
+  # Load the datasets
+  data_d = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/temperature_delhi_small.csv", format="csv", header=TRUE, sep=",")
+  #data_d = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/temperature_delhi.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  smoothed_value = exponential_smoothing_vectorized(data_d, alpha, number_of_executions)
+ 
+  if (abs(smoothed_value - expected_output_d) < 0.0000000005) {
+    print("test_exponential_smoothing_vectorized_dataset_d: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    #println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_vectorized_dataset_d: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+#################################################
+# Dataset E
+
+test_exponential_smoothing_basic_dataset_e = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_e = 233.27015019545632
+  
+  # Load the datasets
+  data_e = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/stock_open_microsoft.csv", format="csv", header=TRUE, sep=",")
+  #data_e = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/stock_open_microsoft.csv", format="csv", header=TRUE, sep=",")
+
+  # Execute the function
+  result = exponential_smoothing_basic(data_e, alpha, number_of_executions)
+
+  # Access the returned values
+  smoothed_value = result[1]
+  function_time = result[2]
+
+  if (abs(smoothed_value - expected_output_e) < 0.0000000005) {
+    print("test_exponential_smoothing_basic_dataset_e: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_basic_dataset_e: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+test_exponential_smoothing_vectorized_dataset_e = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_e = 233.27015019545632
+  
+  # Load the datasets
+  data_e = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/stock_open_microsoft.csv", format="csv", header=TRUE, sep=",")
+  #data_e = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/stock_open_microsoft.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  smoothed_value = exponential_smoothing_vectorized(data_e, alpha, number_of_executions)
+ 
+  if (abs(smoothed_value - expected_output_e) < 0.0000000005) {
+    print("test_exponential_smoothing_vectorized_dataset_e: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    #println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_vectorized_dataset_e: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+#################################################
+# Dataset F
+
+test_exponential_smoothing_basic_dataset_f = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_f = 26390.068709835385
+  
+  # Load the datasets
+  data_f = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/nyctaxitraffic_small.csv", format="csv", header=TRUE, sep=",")
+  #data_f = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/nyctaxitraffic_small.csv", format="csv", header=TRUE, sep=",")
+  
+  # Execute the function
+  result = exponential_smoothing_basic(data_f, alpha, number_of_executions)
+
+  # Access the returned values
+  smoothed_value = result[1]
+  function_time = result[2]
+
+  if (abs(smoothed_value - expected_output_f) < 0.0000000005) {
+    print("test_exponential_smoothing_basic_dataset_f: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_basic_dataset_f: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+test_exponential_smoothing_vectorized_dataset_f = function() return (boolean result) {
+  # Define the parameters for testing
+  alpha = 0.7
+  number_of_executions = 10
+
+  # Expected output
+  expected_output_f = 26390.068709835385
+  
+  # Load the datasets
+  data_f = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/preprocessed_data_files/nyctaxitraffic_small.csv", format="csv", header=TRUE, sep=",")
+  #data_f = read("Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/nyctaxitraffic_small.csv", format="csv", header=TRUE, sep=",")
+   
+  # Execute the function
+  smoothed_value = exponential_smoothing_vectorized(data_f, alpha, number_of_executions)
+ 
+  if (abs(smoothed_value - expected_output_f) < 0.0000000005) {
+    print("test_exponential_smoothing_vectorized_dataset_f: PASSED\n")
+    println("smoothed_value: ", smoothed_value)
+    #println("function executed in: ", function_time, " seconds.\n")
+    passed_tests = passed_tests + 1
+    result = TRUE
+  } else {
+    print("test_exponential_smoothing_vectorized_dataset_f: FAILED\n")
+    failed_tests = failed_tests + 1
+    result = FALSE
+  }
+}
+
+
+# Run the tests and count the results
+test_exponential_smoothing_basic_dataset_a()
+test_exponential_smoothing_vectorized_dataset_a()
+test_exponential_smoothing_basic_dataset_b()
+test_exponential_smoothing_vectorized_dataset_b()
+test_exponential_smoothing_basic_dataset_c()
+test_exponential_smoothing_vectorized_dataset_c()
+test_exponential_smoothing_basic_dataset_d()
+test_exponential_smoothing_vectorized_dataset_d()
+test_exponential_smoothing_basic_dataset_e()
+test_exponential_smoothing_vectorized_dataset_e()
+test_exponential_smoothing_basic_dataset_f()
+test_exponential_smoothing_vectorized_dataset_f()
+
+print("Total tests passed:", passed_tests, "\n")
+print("Total tests failed:", failed_tests, "\n")

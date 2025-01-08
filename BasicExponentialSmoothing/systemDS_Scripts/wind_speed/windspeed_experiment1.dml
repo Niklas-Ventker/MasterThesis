@@ -1,5 +1,7 @@
 # Read the CSV file into a frame
-wind_speed = read("/Users/niklas/Documents/GitHub/Uni/10_Masterarbeit/data_files/prepocessed_datafiles/wind_speed.csv", format="csv", header=TRUE, sep=",")
+#wind_speed = read("/Users/niklas/Documents/GitHub/Uni/10_Masterarbeit/data_files/prepocessed_datafiles/wind_speed.csv", format="csv", header=TRUE, sep=",")
+wind_speed = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/wind_speed.csv", format="csv", header=FALSE, sep=",", rows=65689000, cols=1)
+
 
 # Print the size of the data
 print("Dataframe wind_speed has " + toString(nrow(wind_speed)) + " rows.")
