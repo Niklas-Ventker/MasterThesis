@@ -1,14 +1,14 @@
-####################################################
 
-Repository for my Master's Thesis.
+___
+
+## Repository for my Master's Thesis.
 ____________________________________________________
 
-Parallel Evaluation of Time Series Forecasting
-via Recurrence Equations.
+### Topic:
+- Parallel Evaluation of Time Series Forecasting via Recurrence Equations.
 ____________________________________________________
 
-Niklas Ventker
-TU Berlin
-M. Sc. Information Systems Management
+- Author:       Niklas Ventker
+- University:   TU Berlin, M. Sc. Information Systems Management
 
-####################################################
+___
