@@ -11,5 +11,10 @@
         ".",
         "-p",
         "test_*.py"
+    ],
+    "cmake.ctestDefaultArgs": [
+        "tests",
+        "Test",
+        "test"
     ]
 }
