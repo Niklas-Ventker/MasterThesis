@@ -1,0 +1,66 @@
+# Vectorized ARIMA Complete Test Function 
+
+# Load data file
+#data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/wind_speed.csv", format="csv", header=FALSE, sep=",", rows=65689000, cols=1)
+#data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/energy_generation_solar.csv", format="csv", header=FALSE, sep=",", rows=49063000, cols=1)
+data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/heart_rate.csv", format="csv", header=FALSE, sep=",", rows=103921290, cols=1)
+#data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/temperature_delhi.csv", format="csv", header=FALSE, sep=",", rows=32164000, cols=1)
+#data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/stock_open_microsoft.csv", format="csv", header=FALSE, sep=",", rows=16610000, cols=1)
+#data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/nyctaxitraffic.csv", format="csv", header=FALSE, sep=",", rows=82560000, cols=1)
+
+# Print the size of the data
+print("Dataframe has " + toString(nrow(data)) + " rows.")
+
+# Parameters
+order = 1
+lags = 2
+
+vector = matrix(0, rows=3, cols=1)
+vector[1,1] = 0.9208;
+vector[2,1] = -0.0111;
+vector[3,1] = 0.0766;
+
+theta = matrix(0, rows=2, cols=1)
+theta[1,1] = 0.3;
+theta[2,1] = 0.3;
+
+start_time = time();
+
+# Perform Integrated Component
+for (i in 1:order) {
+    diff_data = data[2:nrow(data), ] - data[1:(nrow(data)-1), ];
+    data = diff_data;
+    }
+
+# Perform Autoregressive Component
+rows = nrow(data);
+lagged_matrix = matrix(0, rows, lags + 1);
+for (i in 1:(lags + 1)) {
+#    lagged_matrix[,i] = shift(data, -(i - 1));
+    offset = i - 1;
+    lagged_matrix[1:(rows - offset), i] = data[(1+offset):rows, 1];
+}
+lagged_matrix = lagged_matrix[1:(rows - lags), ];
+forecast_data = lagged_matrix %*% matrix(vector, rows=3, cols=1);
+
+# Perform Moving Average Component
+integrated_data = data;
+num_ma_lags = 2;
+min_length = min(nrow(data), nrow(forecast_data));
+original_data = data[1:min_length,];
+forecast_data = forecast_data[1:min_length,];
+errors = original_data - forecast_data;
+lagged_errors = matrix(0, nrow(errors), num_ma_lags);
+for (i in 1:num_ma_lags) {
+    lagged_errors[(i+1):nrow(errors),i] = errors[1:(nrow(errors)-i),1];
+}
+weighted_lagged_errors = lagged_errors %*% matrix(theta, rows=num_ma_lags, cols=1);
+updated_forecast = forecast_data + weighted_lagged_errors;
+last_result = updated_forecast[nrow(updated_forecast), 1];
+
+end_time = time();
+function_time = (end_time - start_time) / 1e9; # Convert nanoseconds to seconds
+
+print("test_arima_complete_vectorized: " + toString(last_result));
+print("Execution Time: " + function_time + " seconds");
+

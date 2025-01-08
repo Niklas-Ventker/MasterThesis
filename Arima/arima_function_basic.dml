@@ -1,0 +1,66 @@
+# Basic ARIMA Complete Test Function
+
+# Read the CSV file into a frame
+data = read("/Users/niklas/Documents/GitHub/MasterThesis/0_Data_files/replicated_preprocessed_data_files/stock_open_microsoft.csv", format="csv", header=FALSE, sep=",", rows=16610000, cols=1)
+
+# Print the size of the data
+print("Dataframe has " + toString(nrow(data)) + " rows.")
+
+# Parameters
+order = 1
+lags = 2
+
+vector = matrix(0, rows=3, cols=1)
+vector[1,1] = 0.9208
+vector[2,1] = -0.0111
+vector[3,1] = 0.0766
+#vector[1,1] = 0.1
+#vector[2,1] = 0.1
+#vector[3,1] = 0.1
+
+theta = matrix(0, rows=2, cols=1)
+theta[1,1] = 0.3
+theta[2,1] = 0.3
+
+start_time = time();
+
+# Integrated Component
+differenced_data = data;
+for (k in 1:order) {
+    differenced_data = differenced_data[2:nrow(differenced_data),] - differenced_data[1:(nrow(differenced_data)-1),];
+}
+
+# Autoregressive Component
+rows = nrow(differenced_data);
+result = matrix(0, rows - lags, 1);
+for (i in 1:(rows - lags)) {
+    for (j in 1:(lags + 1)) {
+        result[i,1] = result[i,1] + differenced_data[i + j - 1,1] * vector[j,1];
+    }
+}
+
+# Perform Moving Average Component
+original_data = data;
+forecast_data = result;
+min_length = min(nrow(original_data), nrow(forecast_data));
+original_data = original_data[1:min_length,];
+forecast_data = forecast_data[1:min_length,];
+
+errors = original_data - forecast_data;
+updated_forecast = forecast_data;
+
+for (t in (order+1):nrow(errors)) {
+    weighted_sum = matrix(0, rows=1, cols=1)
+    for (i in 1:order) {
+        weighted_sum = weighted_sum + (theta[i,1] * errors[t - i,1]);
+    }
+    updated_forecast[t,1] = updated_forecast[t,1] + weighted_sum;
+}
+
+last_result = updated_forecast[nrow(updated_forecast), 1];
+
+end_time = time();
+function_time = (end_time - start_time) / 1e9 # Convert nanoseconds to seconds
+
+print("test_arima_complete_basic: " + toString(last_result));
+print("Execution Time: " + function_time + " seconds");

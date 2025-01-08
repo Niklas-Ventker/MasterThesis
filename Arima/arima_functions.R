@@ -1,29 +1,65 @@
-autoregressive_component <- function(data, lags, vector) {
-  # Create a matrix with lagged data
+autoregressive_component_basic <- function(data, lags, vector) {
   rows <- length(data)
-  lagged_matrix <- matrix(0, nrow = rows, ncol = lags + 1)
+  forecast <- numeric(rows - lags) # Create a zero vector of the required size
   
-  for (i in 0:lags) {
-    lagged_matrix[, i + 1] <- c(rep(NA, i), data[1:(rows - i)])
+  # Outer loop over valid forecast positions
+  for (i in 1:(rows - lags)) {
+    # Inner loop over lagged terms
+    for (j in 0:lags) {
+      forecast[i] <- forecast[i] + data[i + j] * vector[j + 1]
+    }
   }
   
-  # Remove rows with incomplete data
-  lagged_matrix <- lagged_matrix[complete.cases(lagged_matrix), ]
+  return(forecast)
+}
+
+autoregressive_component_vectorized <- function(data, lags, vector) {
+  rows <- length(data)
+  lagged_matrix <- sapply(0:lags, function(i) c(data[(i + 1):rows], rep(NA, i)))
   
-  # Perform matrix-vector multiplication
+  lagged_matrix <- lagged_matrix[1:(rows - lags), ]  
   result <- lagged_matrix %*% vector
   return(result)
 }
 
+integrated_component_basic <- function(data, order) {
+  differenced_data <- data
+  for (i in 1:order) {
+    differenced_data <- diff(differenced_data)
+  }
+  return(differenced_data)
+}
 
-integrated_component <- function(data, order) {
+integrated_component_vectorized <- function(data, order) {
   # Perform differencing on the data
   differenced_data <- diff(data, differences = order)
   return(differenced_data)
 }
 
+moving_average_component_basic <- function(original_data, forecast_data, order, theta) {
+  original_data <- as.numeric(original_data)
+  forecast_data <- as.numeric(forecast_data)
+  theta <- as.numeric(theta)
+  
+  min_length <- min(length(original_data), length(forecast_data))
+  original_data <- original_data[1:min_length]
+  forecast_data <- forecast_data[1:min_length]
+  
+  errors <- original_data - forecast_data
+  updated_forecast <- forecast_data
+  
+  for (t in (order + 1):length(errors)) {
+    weighted_sum <- 0
+    for (i in 1:order) {
+      weighted_sum <- weighted_sum + theta[i] * errors[t - i]
+    }
+    updated_forecast[t] <- updated_forecast[t] + weighted_sum
+  }
+  
+  return(updated_forecast)
+}
 
-moving_average_component <- function(original_data, forecast_data, order, theta) {
+moving_average_component_vectorized <- function(original_data, forecast_data, order, theta) {
   original_data <- as.numeric(original_data)
   forecast_data <- as.numeric(forecast_data)
   theta <- as.numeric(theta)
