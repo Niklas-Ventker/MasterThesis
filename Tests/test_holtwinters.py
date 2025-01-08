@@ -3,7 +3,9 @@ import pytest
 
 from HoltWinters.HoltWinters import (
     triple_exponential_smoothing_basic,
-    triple_exponential_smoothing_vectorized
+    triple_exponential_smoothing_vectorized,
+    triple_exponential_smoothing_basic_parallelized,
+    triple_exponential_smoothing_vectorized_parallelized
 )
 
 #################################################
@@ -22,13 +24,25 @@ season_length = 24
 expected_output_b = 90.60914407238147
 
 
-def test_triple_exponential_smoothing_basic_dataset_B():
+def test_triple_exponential_smoothing_basic_dataset_b():
     smoothed = triple_exponential_smoothing_basic(data_b, alpha, beta, gamma, season_length)
     last_smoothed_value = smoothed[-1]
     assert np.allclose(last_smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {last_smoothed_value}"
     
 
-def test_triple_exponential_smoothing_vectorized_dataset_B():
+def test_triple_exponential_smoothing_vectorized_dataset_b():
     smoothed = triple_exponential_smoothing_vectorized(data_b, alpha, beta, gamma, season_length)
+    last_smoothed_value = smoothed[-1]
+    assert np.allclose(last_smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {last_smoothed_value}"
+
+
+def test_triple_exponential_smoothing_basic_parallelized_dataset_b():
+    smoothed = triple_exponential_smoothing_basic_parallelized(data_b, alpha, beta, gamma, season_length)
+    last_smoothed_value = smoothed[-1]
+    assert np.allclose(last_smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {last_smoothed_value}"
+
+
+def test_triple_exponential_smoothing_vectorized_parallelized_dataset_b():
+    smoothed = triple_exponential_smoothing_vectorized_parallelized(data_b, alpha, beta, gamma, season_length)
     last_smoothed_value = smoothed[-1]
     assert np.allclose(last_smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {last_smoothed_value}"
