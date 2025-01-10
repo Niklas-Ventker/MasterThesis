@@ -44,7 +44,7 @@ def test_exponential_smoothing_vectorized_parallel_dataset_a():
     print(f"test_exponential_smoothing_vectorized_parallel_dataset_a")
     print(f"Function execution time: {function_time} seconds\n")
 
-"""    
+
 #################################################
 # Dataset B - Energy generation solar
 
@@ -81,7 +81,6 @@ def test_exponential_smoothing_vectorized_parallel_dataset_b():
     assert np.allclose(smoothed_value, expected_output_b, 0.0000000005), f"Expected {expected_output_b}, but got {smoothed_value}"
     print(f"test_exponential_smoothing_vectorized_parallel_dataset_b")
     print(f"Function execution time: {function_time} seconds\n")
-
 
 
 #################################################
@@ -121,7 +120,6 @@ def test_exponential_smoothing_vectorized_parallel_dataset_c():
     assert np.allclose(smoothed_value, expected_output_c, 0.0000000005), f"Expected {expected_output_c}, but got {smoothed_value}"
     print(f"test_exponential_smoothing_vectorized_parallel_dataset_c")
     print(f"Function execution time: {function_time} seconds\n")
-
 
 
 #################################################
@@ -187,6 +185,7 @@ def test_exponential_smoothing_vectorized_parallel_dataset_e():
     print(f"test_exponential_smoothing_vectorized_parallel_dataset_e")
     print(f"Function execution time: {function_time} seconds\n")
 
+
 #################################################
 # Dataset F
 
@@ -217,4 +216,3 @@ def test_exponential_smoothing_vectorized_parallel_dataset_f():
     assert np.allclose(smoothed_value, expected_output_f, 0.0000000005), f"Expected {expected_output_f}, but got {smoothed_value}"
     print(f"test_exponential_smoothing_vectorized_parallel_dataset_f")
     print(f"Function execution time: {function_time} seconds\n")
-"""

@@ -29,7 +29,7 @@ def exponential_smoothing_vectorized(data, alpha, number_of_executions):
 
 @jit(nopython=True)
 def smooth_wind_speed_basic(wind_speed, alpha):
-    smoothed_value = wind_speed[0]  # Initialize with the first value
+    smoothed_value = wind_speed[0]  
     for i in prange(1, len(wind_speed)):
         smoothed_value = alpha * wind_speed[i] + (1 - alpha) * smoothed_value
     return smoothed_value

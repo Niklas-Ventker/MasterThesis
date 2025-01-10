@@ -1,20 +1,7 @@
 import numpy as np
 
 def triple_exponential_smoothing_basic(data, alpha, beta, gamma, season_length):
-    """
-    Performs triple exponential smoothing on the given data.
-
-    Args:
-        data: The input data as a NumPy array.
-        alpha: Smoothing factor for level.
-        beta: Smoothing factor for trend.
-        gamma: Smoothing factor for seasonality.
-        season_length: Length of the seasonal period.
-
-    Returns:
-        A tuple containing the smoothed values, level, trend, and season components.
-    """
-
+    
     n = len(data)
 
     # Initialize arrays
@@ -45,19 +32,6 @@ def triple_exponential_smoothing_basic(data, alpha, beta, gamma, season_length):
 
 
 def triple_exponential_smoothing_vectorized(data, alpha, beta, gamma, season_length):
-    """
-    Performs triple exponential smoothing on the given data.
-
-    Args:
-        data: The input data as a NumPy array.
-        alpha: Smoothing factor for level.
-        beta: Smoothing factor for trend.
-        gamma: Smoothing factor for seasonality.
-        season_length: Length of the seasonal period.
-
-    Returns:
-        A tuple containing the smoothed values, level, trend, and season components.
-    """
     
     n = data.shape[0]
 
@@ -138,19 +112,6 @@ def triple_exponential_smoothing_basic_parallelized(data, alpha, beta, gamma, se
 import numpy as np
 
 def triple_exponential_smoothing_vectorized_parallelized(data, alpha, beta, gamma, season_length):
-    """
-    Performs triple exponential smoothing on the given data using vectorized parallelization.
-
-    Args:
-        data: The input data as a NumPy array.
-        alpha: Smoothing factor for level.
-        beta: Smoothing factor for trend.
-        gamma: Smoothing factor for seasonality.
-        season_length: Length of the seasonal period.
-
-    Returns:
-        A tuple containing the smoothed values, level, trend, and season components.
-    """
     
     n = data.shape[0]
 

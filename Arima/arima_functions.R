@@ -1,6 +1,6 @@
 autoregressive_component_basic <- function(data, lags, vector) {
   rows <- length(data)
-  forecast <- numeric(rows - lags) # Create a zero vector of the required size
+  forecast <- numeric(rows - lags) 
   
   # Outer loop over valid forecast positions
   for (i in 1:(rows - lags)) {
